@@ -1,66 +1,79 @@
-document.getElementById('formulario').addEventListener('submit', cadastraVeiculo);
+(function (){
 
-function cadastraVeiculo(){
+    const $ = q => document.querySelector(q);
 
-    var modeloCarro = document.getElementById('modeloCarro').value;
-    var placaCarro = document.getElementById('placaCarro').value;
-    var time = new Date();
-
-    carro = {
-        modelo: modeloCarro,
-        placa: placaCarro,
-        hora: time.getHours(),
-        minutos: time.getMinutes()
-        
-    };
-
-    if(!modeloCarro && !placaCarro){
-        alert('Escreva o modelo e a placa do veiculo');
-        return false;
+    function convertePeriod(mil){
+        const min = Math.floor(mil / 60000);
+        const sec = Math.floor((mil % 60000) / 1000)
+        return `${min}m e ${sec}s`
     }
 
-    if (localStorage.getItem('patio') === null){
-        var carros = [];
-        carros.push(carro);
-        localStorage.setItem('patio', JSON.stringify(carros));
-    } else{
-        var carros = JSON.parse(localStorage.getItem('patio'));
-        carros.push(carro);
-        localStorage.setItem('patio', JSON.stringify(carros));
+    function renderGarage(){
+        const garage = getGarage()
+        $('#garage').innerHTML = ''
+        garage.forEach(c => addCarToGarage(c))
     }
+
+    function addCarToGarage(car){
+        const row = document.createElement('tr')
+        row.innerHTML = `
+            <td>${car.name}</td>
+            <td>${car.licence}</td>
+            <td data-time="${car.time}">${new Date(car.time)
+                .toLocaleDateString('pt-BR', { 
+                hour:'numeric', minute:'numeric'})
+            }</td>
+            <td><button class="delete">X</button></td>
+        `
+        $("#garage").appendChild(row)
+
+    }
+
+    function checkOut(info){
+        let period = new Date() - new Date(info[2].dataset.time)
+        period = convertePeriod(period)
+        const licence = info[1].textContent
+
+        const msg = `O veiculo ${info[0].textContent} de placa ${licence} permaneceu estacionado por ${period}. Deseja encerrar?`
+
+        if (!confirm (msg)) return;
+
+        const garage = getGarage().filter(c => c.licence !== licence)
+        localStorage.garage = JSON.stringify(garage)
+        renderGarage()
+        //console.log(period)
+    }
+
+    const getGarage = () => localStorage.garage ? JSON.parse(localStorage.garage) : [];
     
-}   
+    renderGarage();
 
-function apagarVeiculo(placa){
-    var carros = JSON.parse(localStorage.getItem('patio'));
+    $('#send').addEventListener('click', e => {
+        const name = $('input#name').value
+        const licence = $('input#licence').value
 
-    for(var i = 0; i < carros.length; i++){
-        if (carros[i].placa == placa){
-            carros.splice(i, 1);
+        if(!name || !licence){
+            alert('Preencha os 2 campos!')
+            return;
         }
 
-        localStorage.setItem('patio', JSON.stringify(carros));
-    }
+        const car = {name, licence, time: new Date() }
 
-    mostraPatio();
-}
+        const garage = getGarage()
+        garage.push(car);
 
-function mostraPatio(){
-    var carros = JSON.parse(localStorage.getItem('patio'));
-    var carrosResultado = document.getElementById('resultados')
-    carrosResultado.innerHTML = '';
+        localStorage.garage = JSON.stringify(garage)
+        //console.log(garage)
 
-    for (var i = 0; i < carros.length; i++){
-        var modelo = carros[i].modelo;
-        var placa = carros[i].placa;
-        var hora = carros[i].hora;
-        var minutos = carros[i].minutos;
+        addCarToGarage(car)
 
-        carrosResultado.innerHTML += '<tr><td>' + modelo +
-                                '</td><td>' + placa +
-                                '</td><td>' + hora + ':' + minutos +
-                                '</td><td>'+'<button class="btn btn-danger" onclick="apagarVeiculo(\''+ placa +'\')">Remover</button>' +
-                                '</td></tr>'
-    }
-}
-    
+        $('input#name').value = "";
+        $('input#licence').value = "";
+    });
+
+    $("#garage").addEventListener("click", e =>{
+        if(e.target.className == 'delete')
+        checkOut(e.target.parentElement.parentElement.cells);
+    })
+
+ })();
