@@ -51,8 +51,7 @@ const getTotal = transactionAmouts => transactionAmouts
     .toFixed(2)
 
 const updateBalanceValues = () => {
-    const transactionAmouts = transactions
-    .map(transaction => transaction.amount)
+    const transactionAmouts = transactions.map(({ amount}) => amount)
 
     const total = getTotal(transactionAmouts)
 
