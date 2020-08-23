@@ -3,6 +3,7 @@ let lista = document.querySelector('select#flista')
 let res = document.querySelector('div#res')
 let valores = []
 
+//tratando os numeros que tem que ser maior ou igual a 1 e menor ou igual a 100
 function isNumero(n){
     if(Number(n) >= 1 && Number(n) <= 100){
         return true
@@ -10,6 +11,7 @@ function isNumero(n){
         return false
     }
 }
+
 
 function inLista(n, l){
     if (l.indexOf(Number(n)) != -1){
