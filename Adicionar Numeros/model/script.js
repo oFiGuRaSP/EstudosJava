@@ -32,8 +32,9 @@ function adicionar(){
     } else{
         window.alert('Valor inválido ou já encontrado na lista.')
     }
-    num.value = ''
-    num.focus()
+    num.value = ''//limpa o input removendo o ultimo numero da barra
+    num.focus()//retorna o seletor para a barra de digitar numeros, evitando ter que 
+                //ficar clicando toda vez que adicionar um valor para adicionar outro.
 }
 
 function finalizar() {
