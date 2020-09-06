@@ -2,30 +2,30 @@ const addNames = document.getElementById('txtnome')
 const names = [];
 
 //adiciona os nomes
-function adicionar(){
+function adicionar() {
 
-    if(!names.includes(addNames.value.toUpperCase())){
-        
+    if (!names.includes(addNames.value.toUpperCase())) {
+
         addNames.focus()
     }
-    else{
+    else {
         alert('Sem nome repitido, FILHO DA PUTA')
         addNames.value = ''
         return false
-        
+
     }
-    
-    if(!addNames.value.length == 0){
+
+    if (!addNames.value.length == 0) {
         names.push(addNames.value.toUpperCase())
-        
-        
-    } else{
-        alert ('Preenche essa porra, FILHO DA PUTA!')
+
+
+    } else {
+        alert('Preenche essa porra, FILHO DA PUTA!')
         return false
     }
 
 
-    const showNames = names.reduce((accumulator, amount) => amount,'')
+    const showNames = names.reduce((accumulator, amount) => amount, '')
     nomes.innerHTML += `${showNames}</br>`
 
     addNames.value = ''
@@ -33,11 +33,11 @@ function adicionar(){
 }
 
 //sortear quem vai fazer o narguile
-function sortear(){
+function sortear() {
 
     let res = document.querySelector('div#res')
     const quantNomes = names.length
     sorteiaNomes = Math.floor(Math.random() * quantNomes)
-        
-    res.innerHTML = names[sorteiaNomes].toUpperCase()  
+
+    res.innerHTML = names[sorteiaNomes].toUpperCase()
 }
